@@ -1,100 +1,46 @@
-# Upgrade - Performance Coding Challenge
+#Upgrade - Performance Coding Challenge
+#Summary
+Included here, is the completed Load Test Project for running the microservice included in the project provided for this challenge..
+Points to note
+This project is completed using Maven with jmeter dependencies set in pom file. Refer to Performance Score Card for the SLA”s I have defined and the measured values from the tests based on which I have provided my recommendations.
 
-## Summary
+#Performance ScoreCard:
+Concurrent Threads	Endpoints	Target SLA’s	Measured	Target/5mins	Status
+		Avg	99th Percentile	Avg	99th Percentile		
+100	/user/v1/create	1 secs	2secs	11.01secs	29.20secs	1000	Fail
+	/user/v1/find/<valid-uuid>	1secs	2secs	11.10secs	31.12secs	1000	Fail
 
-Included here, is a small backend service with REST API endpoints. This is the application-under-test.
-You are required to run the service on your local machine, write performance tests for this service and report your findings along with any suggested improvements.
+#Instructions for running this test:
+1.	JAVA 11 should be installed and path variables should be set.
+2.	Extract the project from zip file and Import the project it in IDE
+3.	Install Docker 
+4.	Go to terminal and run docker-compose up –build
+5.	Make sure the “perf-code-challenge” container is created in docker wit its apps/images 
+6.	Go to directory and set following inputs to run this load test incase you plan to run with less load “\src\test\jmeter\loadtest.properties
+THREAD_COUNT=100
+RAMP_TIME=120
+DURATION=300
+7.	Open another terminal and run mvn clean verify
+Reports & Logs:
+1.	Go to directory “target/jmeter/reports” and open the ‘Index.html’ file for the HTML report of the test. 
+2.	Log file will be available here “target/jmeter/results”.
+3.	Go to Grafana dashboard to analyse the health of the app.  Perf-test-challenge-dashboard - Grafana
 
-Keep in mind the following:
-* Create a performance test project with your preferred programming language and framework, Maven (Gradle, or similar) build tool and any other non-proprietary libraries you require.
-* Evaluation will be done on design, maintainability of code, coding style + best practices, application of OOD principles and extensibility of this project to add more simulations for other areas of the Upgrade application.
-* Please do **Not** submit projects with JMeter files. Setup an extensible, maintainable project with Gatling or similar performance testing tools using an Object oriented programming language.
 
-## Requirements
+Test Observations & Recommendations:
+1.	With 100 Concurrent threads there is a big performance degradation with both Avg and 99th Percentile response times way above defined SLA of 2secs
+2.	All Tests were ran for 5 mins interval. Tests were ran on 08/06 between 2PM to 3PM and 10PM to 12AM.
+3.	Did Tests with reduced load to assess the performance. Below is the snapshot of performance under varying load conditions as given below
 
-* Create a performance testing project, with the above guidelines in mind
-* Include performance simulations to:
-    * Generate 100 or more users in the database
-    * Send concurrent createUser requests to the application
-    * Send concurrent getUserById requests to the application
-* Determine request thresholds where the application under test starts to show performance deterioration. You are free to define your own criteria for what classifies as a "service degradation".
-* Similarly, determine the breaking point of the applicaton under test where the server crashes, or requests start timing out.
-* Identify ways that the application under test can be improved in situations where the load is enough to cause service degradation or a crash. 
-* Create a summary file with details about your test simulations, findings and analysis about performance of the application-under-test and any suggestions on improving it's performance
-* Bonus points if you can utilize a postgres DB monitoring tool, to further back your findings
+Endpoint	# Successful Requests	Avg Response Time(ms)
+	50 Threads	75 Threads	100 Threads	150 Threads	200 Threads	50 Threads	75 Threads	100 Threads	150 Threads	200 Threads
+Create User	909	965	1021	1124	1014	5544	8294	11097	15664	23958
+Retrieve User	887	926	982	1048	859	6143	9168	11993	16745	26400
+Throughput	1796	1891	2003	2172	1873	 	 	 	 	 
 
-## Submission
-
-Send us a zip file with your performance testing project - only include result files and source files (no class files or compiled binaries). If you have created a maven or gradle project, run mvn (or gradle) clean before archiving the project contents.
-
-In your submission, please include the following:
-
-* Clear instructions for running the tests that you created, using command line
-* Summary file as outlined above
-* Result files with some simulations you executed
-* Please don't include any of your personal information in the submission
-
-## User Service: the application-under-test
-
-The application under test is a Java Springboot microservice which can be offers REST endpoints to create and fetch users
-
-### System Pre-requisites
-
-- gradle version 7.5 (not all versions are compatible, https://gradle.org/releases/)
-- docker
-
-Note: If running your application in the IDE without docker, you need to set these environment variables to connect to your database:
-```
-SPRING_DATASOURCE_URL
-SPRING_DATASOURCE_USERNAME
-SPRING_DATASOURCE_PASSWORD
-```
-
-### Running the project
-
-To build and run the project from the command line.
-
-```
-gradle clean build
-
-docker-compose up --build
-```
-
-To attach to your microservice container and inspect logs, run:
-```
-docker logs -f user-srvc
-```
-
-To check DB, run:
-```
-psql -h localhost -p 5432 -d postgres -U upgrade_user
-# upgrade_pass for password, when prompted
-
-```
-
-### URLs
-The microservice will be available at http://localhost:8080
-Swagger:    http://localhost:8080/swagger-ui.html
-Grafana:    http://localhost:3000/
-Prometheus: http://localhost:9090/
-
-### API Endpoints
-
-#### createUser
-```
-curl --location --request POST 'http://localhost:8080/user/v1/create' \
---header 'Content-Type: application/json' \
---data-raw '{
-    "firstName":"Mickey",
-    "lastName":"Mouse",
-    "email":"mickey@gmail.com"
-}'
-```
-
-#### getUserById
-```
-curl --location --request GET 'http://localhost:8080/user/v1/find/<valid-uuid>' \
---data-raw ''
-```
-
-### 
+4.	Throughput is decreasing over load and due to following reasons 
+•	All the apps are being hosted on same docker with 1gb memory . 938MB of 1GB is being used during the test.
+•	CPU Count is 1 and adding more CPU will help boost performance.
+•	Max 10 JDBC connections are allowed and we reached the max during all our tests.
+•	Request did not timeout even after 100secs in the queue. Having a timeout set will help improve user experience by atleast showing a meaning message
+•	Response Time trend shows throughput drop due to spikes and it could be a possibility of request queuing due to connection reaching threshold limit.
