@@ -1,0 +1,55 @@
+version: '3.8'
+
+services:
+  app:
+    image: 'user-srvc:1.0.0'
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: user-srvc
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgres
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/postgres
+      - SPRING_DATASOURCE_USERNAME=upgrade_user
+      - SPRING_DATASOURCE_PASSWORD=upgrade_pass
+      - MANGEMENT_ENDPOINT_PROMETHEUS_ENABLED=true
+      - MANGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE=info, health, prometheus
+    deploy:
+      resources:
+        limits:
+          cpus: '0.3'
+          memory: 700M
+
+  postgres:
+    image: 'postgres:13.1'
+    container_name: postgres
+    volumes:
+      - /var/lib/postgresql/data
+    command: postgres -c shared_preload_libraries=pg_stat_statements -c pg_stat_statements.track=all -c 'max_connections=15'
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_USER=upgrade_user
+      - POSTGRES_PASSWORD=upgrade_pass
+      - POSTGRES_DB=upgrade_user
+
+  prometheus:
+    image: prom/prometheus:v2.21.0
+    volumes:
+      - ./prometheus/:/etc/prometheus/
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--web.console.libraries=/usr/share/prometheus/console_libraries'
+      - '--web.console.templates=/usr/share/prometheus/consoles'
+    ports:
+      - 9090:9090
+
+  grafana:
+    image: grafana/grafana:7.5.5
+    ports:
+      - 3000:3000
+    volumes:
+      - ./grafana/:/var/lib/grafana

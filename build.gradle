@@ -1,0 +1,48 @@
+plugins {
+	id 'org.springframework.boot' version '2.3.8.RELEASE'
+	id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+	id 'java'
+}
+
+group = 'com.project'
+version = '1.0.0'
+sourceCompatibility = '11'
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+	implementation 'org.springframework.boot:spring-boot-starter-validation'
+	implementation 'org.springframework.boot:spring-boot-starter-actuator'
+	implementation 'org.postgresql:postgresql'
+	implementation 'org.flywaydb:flyway-core'
+	implementation 'org.springdoc:springdoc-openapi-ui:1.5.2'
+	implementation group: 'io.micrometer', name: 'micrometer-registry-prometheus', version: '1.6.6'
+	compileOnly group: 'org.springframework.cloud', name: 'spring-cloud-starter-sleuth', version: '2.2.6.RELEASE'
+	compileOnly group: 'javax.validation', name: 'validation-api', version: '2.0.1.Final'
+	compileOnly group: 'org.hibernate', name: 'hibernate-validator', version: '7.0.0.Final'
+	compileOnly group: 'org.mapstruct', name: 'mapstruct', version: '1.4.0.Final'
+	compileOnly group: 'org.projectlombok', name: 'lombok', version: '1.18.24'
+	annotationProcessor 'org.projectlombok:lombok:1.18.24'
+	annotationProcessor 'org.mapstruct:mapstruct-processor:1.4.0.Final'
+
+	// test dependencies
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testImplementation 'org.junit.jupiter:junit-jupiter-api:5.2.0'
+}
+
+test {
+	useJUnitPlatform()
+
+	testLogging {
+		events 'PASSED', 'FAILED', 'SKIPPED'
+	}
+}
+
+jar {
+	project.archivesBaseName = 'user-srvc'
+	project.version = ''
+}
