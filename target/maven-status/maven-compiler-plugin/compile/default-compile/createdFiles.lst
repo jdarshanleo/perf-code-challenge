@@ -1,0 +1,15 @@
+com\challenge\user\model\UserRequestSto.class
+com\challenge\user\persistence\domain\UpgradeUser$UpgradeUserBuilder.class
+com\challenge\user\persistence\UserService.class
+com\challenge\user\exceptions\UserExistsException.class
+com\challenge\user\model\ApiErrorSto$ApiErrorStoBuilder.class
+com\challenge\user\persistence\domain\UpgradeUser.class
+com\challenge\user\model\UserRequestSto$UserRequestStoBuilder.class
+com\challenge\user\model\ApiErrorSto.class
+com\challenge\UserApplication.class
+com\challenge\user\persistence\UserServiceImpl.class
+com\challenge\user\controller\UserController.class
+com\challenge\user\controller\UserControllerAdvice.class
+com\challenge\user\model\UserCreationResponseAto.class
+com\challenge\user\persistence\UserRepository.class
+com\challenge\user\exceptions\UserDoesNotExist.class

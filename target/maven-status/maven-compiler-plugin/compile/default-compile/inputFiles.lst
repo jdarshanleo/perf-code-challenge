@@ -1,0 +1,12 @@
+C:\perf-code-challenge\src\main\java\com\challenge\user\exceptions\UserDoesNotExist.java
+C:\perf-code-challenge\src\main\java\com\challenge\user\model\UserCreationResponseAto.java
+C:\perf-code-challenge\src\main\java\com\challenge\user\controller\UserControllerAdvice.java
+C:\perf-code-challenge\src\main\java\com\challenge\user\exceptions\UserExistsException.java
+C:\perf-code-challenge\src\main\java\com\challenge\user\persistence\UserService.java
+C:\perf-code-challenge\src\main\java\com\challenge\user\model\UserRequestSto.java
+C:\perf-code-challenge\src\main\java\com\challenge\UserApplication.java
+C:\perf-code-challenge\src\main\java\com\challenge\user\controller\UserController.java
+C:\perf-code-challenge\src\main\java\com\challenge\user\model\ApiErrorSto.java
+C:\perf-code-challenge\src\main\java\com\challenge\user\persistence\UserRepository.java
+C:\perf-code-challenge\src\main\java\com\challenge\user\persistence\UserServiceImpl.java
+C:\perf-code-challenge\src\main\java\com\challenge\user\persistence\domain\UpgradeUser.java
